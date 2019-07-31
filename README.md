@@ -3,6 +3,17 @@
 
 
 #### 二、在JS中进行配置：
+
+html元素：
+```
+<div class="count-down-time">
+    <span class="day"></span>天
+    <span class="hour"></span>时
+    <span class="minute"></span>分
+    <span class="second"></span>秒
+</div>
+```
+
 ```
 //创建实例
 var timedown = new Countdown({
