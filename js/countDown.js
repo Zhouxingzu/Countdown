@@ -1,6 +1,6 @@
 //倒计时组件
 function Countdown(obj) {
-    var that = this;
+    let that = this;
     that.$days = obj.$days;         //天数
     that.$hours = obj.$hours;       //小时
     that.$minutes = obj.$minutes;   //分钟
@@ -13,15 +13,18 @@ function Countdown(obj) {
         minute: 0,
         second: 0
     }, obj.countTime);
+    that.isLeftTime = obj.isLeftTime || false;  //是否为截止时间差值(此时应该传入差值的时间戳)
+    that.timestamp = Number(obj.timestamp) || 0;  //差值的时间戳
     that.init();
 }
 
 Countdown.prototype = {
     constructor: Countdown,
     interval: null,
+    initTime: 0,
     //初始化
     init: function() {
-        var that = this;
+        let that = this;
         that.leftTimer(that.countTime);
         that.interval = setInterval(function() {
             that.leftTimer(that.countTime);
@@ -30,14 +33,19 @@ Countdown.prototype = {
 
     //距离活动开始倒计时
     leftTimer: function(obj) { 
-        var that = this;
-        var year = obj.year;
-        var month = obj.month;
-        var day = obj.day;
-        var hour = obj.hour;
-        var minute = obj.minute;
-        var second = obj.second;
-        var leftTime = (new Date(year, month - 1, day, hour, minute, second)) - (new Date()); //计算剩余的毫秒数
+        let that = this;
+        let year = obj.year;
+        let month = obj.month;
+        let day = obj.day;
+        let hour = obj.hour;
+        let minute = obj.minute;
+        let second = obj.second;
+        let leftTime = (new Date(year, month - 1, day, hour, minute, second)) - (new Date()); //计算剩余的毫秒数
+        //如果传入的是时间差值
+        if(that.isLeftTime) {
+            that.initTime = that.initTime + 1000;
+            leftTime = that.timestamp - that.initTime;
+        }
         //时间到
         if(leftTime <= 0) {
             $(that.$days).text('00');
@@ -46,10 +54,10 @@ Countdown.prototype = {
             $(that.$seconds).text('00'); 
             return clearInterval(that.interval);
         } 
-        var days = parseInt(leftTime / 1000 / 60 / 60 / 24, 10); //计算剩余的天数 
-        var hours = parseInt(leftTime / 1000 / 60 / 60 % 24, 10); //计算剩余的小时 
-        var minutes = parseInt(leftTime / 1000 / 60 % 60, 10);//计算剩余的分钟 
-        var seconds = parseInt(leftTime / 1000 % 60, 10);//计算剩余的秒数 
+        let days = parseInt(leftTime / 1000 / 60 / 60 / 24, 10); //计算剩余的天数 
+        let hours = parseInt(leftTime / 1000 / 60 / 60 % 24, 10); //计算剩余的小时 
+        let minutes = parseInt(leftTime / 1000 / 60 % 60, 10);//计算剩余的分钟 
+        let seconds = parseInt(leftTime / 1000 % 60, 10);//计算剩余的秒数 
         days = this.checkTime(days); 
         hours = this.checkTime(hours); 
         minutes = this.checkTime(minutes); 
@@ -86,7 +94,7 @@ else {
 }
 
 //创建实例
-// var timedown = new Countdown({
+// let timedown = new Countdown({
 //     $days: '#day',
 //     $hours: '#hou',
 //     $minutes: '#minute',
